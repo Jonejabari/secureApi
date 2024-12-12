@@ -45,24 +45,29 @@ public class UserRepositoryImp implements UserRepository<User> {
             SqlParameterSource parameterSource = getSqlParameterSource(user);
             jdbc.update(INSERT_USER_QUERY, parameterSource, keyHolder);
             user.setId(requireNonNull(keyHolder.getKey()).longValue());
+
             // Add role to the user
             roleRepository.addRoleToUser(user.getId(), ROLE_USER.name());
+
             // Send verification URL
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
+
             // Save URL in verification table
-            jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
+            jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "token", verificationUrl));
+
             // Send email to user with verification URL
             // emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
             user.setNotLocked(true);
+
             // Return the newly created user
             return user;
+
             // If any errors, throw exception with proper message
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again. ");
         }
     }
-
 
     @Override
     public Collection<User> list(int page, int pageSize) {

@@ -2,31 +2,6 @@
 ###                                     ###
 ### Author: Jone Jabari                 ###
 ### Date: November 15th 2024            ###
-### Version: 1.0                        ###
-###                                     ###
-###########################################
-
---/*
--- * --- General Rules ----
--- * Use underscore_names instead of CamelCase
--- * Table names should be plural
--- * Spell out id fields (item_id instead of id)
--- * Don't use ambiguous column names
--- * Name foreign key columns the same as the columns they refer
--- * Use caps for all SQL queries
--- */
-
- CREATE SCHEMA IF NOT EXISTS secureapi;
-
- SET NAMES 'UTF8MB4';
- SET TIME_ZONE = '+02:00';
-
- USE secureapi;
-
-###########################################
-###                                     ###
-### Author: Jone Jabari                 ###
-### Date: November 15th 2024            ###
 ### Version: 1.1                        ###
 ###                                     ###
 ###########################################
@@ -56,11 +31,11 @@ CREATE TABLE users
     first_name    VARCHAR(50) NOT NULL,
     last_name     VARCHAR(50) NOT NULL,
     email         VARCHAR(100) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,  -- Changed from password for clarity
+    password_hash VARCHAR(255) NOT NULL,
     address       VARCHAR(255) DEFAULT NULL,
     phone         VARCHAR(30) DEFAULT NULL,
     title         VARCHAR(50) DEFAULT NULL,
-    bio           TEXT DEFAULT NULL,      -- Changed from VARCHAR for longer text
+    bio           TEXT DEFAULT NULL,
     enabled       BOOLEAN DEFAULT FALSE,
     non_locked    BOOLEAN DEFAULT TRUE,
     using_mfa     BOOLEAN DEFAULT FALSE,
@@ -113,7 +88,7 @@ CREATE TABLE user_events
     user_id       BIGINT UNSIGNED NOT NULL,
     event_type_id BIGINT UNSIGNED NOT NULL,
     device        VARCHAR(100) DEFAULT NULL,
-    ip_address    VARCHAR(45) DEFAULT NULL,  -- Changed to 45 to accommodate IPv6
+    ip_address    VARCHAR(45) DEFAULT NULL,
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (event_type_id) REFERENCES event_types (event_type_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -125,8 +100,8 @@ CREATE TABLE account_verifications
 (
     verification_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id        BIGINT UNSIGNED NOT NULL,
-    token          VARCHAR(255) NOT NULL,    -- Changed from URL to token
-    expiration_date DATETIME NOT NULL,       -- Added expiration
+    token          VARCHAR(255) NOT NULL,
+    expiration_date DATETIME NOT NULL,
     created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT UQ_account_verifications_user_id UNIQUE (user_id),
@@ -139,7 +114,7 @@ CREATE TABLE password_reset_tokens
 (
     reset_token_id   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id          BIGINT UNSIGNED NOT NULL,
-    token            VARCHAR(255) NOT NULL,    -- Changed from URL to token
+    token            VARCHAR(255) NOT NULL,
     expiration_date  DATETIME NOT NULL,
     created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -159,7 +134,7 @@ CREATE TABLE mfa_tokens
     CONSTRAINT UQ_mfa_tokens_code UNIQUE (code)
 );
 
--- Insert default event types
+-- Insert event types
 INSERT INTO event_types (name, description) VALUES
 ('LOGIN_ATTEMPT', 'User attempted to log in'),
 ('LOGIN_FAILURE', 'User login failed'),

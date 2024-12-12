@@ -6,7 +6,6 @@ import io.jone.secureapi.repository.RoleRepository;
 import io.jone.secureapi.rowmapper.RoleRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.Logger;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,6 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static io.jone.secureapi.enumeration.RoleType.ROLE_USER;
+import static io.jone.secureapi.query.RoleQuery.INSERT_ROLE_TO_USER_QUERY;
+import static io.jone.secureapi.query.RoleQuery.SELECT_ROLE_BY_NAME_QUERY;
 import static java.util.Map.of;
 import static java.util.Objects.requireNonNull;
 
@@ -22,10 +23,8 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 @Slf4j
 public class RoleRepositoryImpl implements RoleRepository<Role> {
-    private static final String INSERT_ROLE_TO_USER_QUERY = "";
-    private static final String SELECT_ROLE_BY_NAME_QUERY = "";
-    private NamedParameterJdbcTemplate jdbc;
-    private Logger log;
+    private final NamedParameterJdbcTemplate jdbc;
+
 
     @Override
     public Role create(Role data) {
