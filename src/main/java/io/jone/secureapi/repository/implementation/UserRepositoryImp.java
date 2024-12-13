@@ -30,9 +30,9 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 @Slf4j
 public class UserRepositoryImp implements UserRepository<User> {
-    private NamedParameterJdbcTemplate jdbc;
-    private RoleRepository<Role> roleRepository;
-    private BCryptPasswordEncoder encoder;
+    private final NamedParameterJdbcTemplate jdbc;
+    private final RoleRepository<Role> roleRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Override
     public User create(User user) {
