@@ -23,15 +23,17 @@ SET TIME_ZONE = '+02:00';
 
 USE secureapi;
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users
 (
     user_id       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    first_name    VARCHAR(50) NOT NULL,
-    last_name     VARCHAR(50) NOT NULL,
+    firstName    VARCHAR(50) NOT NULL,
+    lastName     VARCHAR(50) NOT NULL,
     email         VARCHAR(100) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     address       VARCHAR(255) DEFAULT NULL,
     phone         VARCHAR(30) DEFAULT NULL,
     title         VARCHAR(50) DEFAULT NULL,
@@ -145,6 +147,8 @@ INSERT INTO event_types (name, description) VALUES
 ('ACCOUNT_SETTINGS_UPDATE', 'Account settings were modified'),
 ('PASSWORD_UPDATE', 'Password was changed'),
 ('MFA_UPDATE', 'Multi-factor authentication settings were modified');
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 
 -- DROP TABLE IF EXISTS Users;
