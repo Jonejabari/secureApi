@@ -30,9 +30,9 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 @Slf4j
 public class UserRepositoryImp implements UserRepository<User> {
-    private NamedParameterJdbcTemplate jdbc;
-    private RoleRepository<Role> roleRepository;
-    private BCryptPasswordEncoder encoder;
+    public final NamedParameterJdbcTemplate jdbc;
+    private final RoleRepository<Role> roleRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Override
     public User create(User user) {
@@ -65,6 +65,7 @@ public class UserRepositoryImp implements UserRepository<User> {
 
             // If any errors, throw exception with proper message
         } catch (Exception exception) {
+            log.error(exception.getMessage());
             throw new ApiException("An error occurred. Please try again. ");
         }
     }

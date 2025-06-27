@@ -55,13 +55,28 @@ public class RoleRepositoryImpl implements RoleRepository<Role> {
     public void addRoleToUser(Long userId, String roleName) {
         log.info("Adding role {} to user id: {}", roleName, userId);
         try {
-            Role role = jdbc.queryForObject(SELECT_ROLE_BY_NAME_QUERY, of("roleName", roleName), new RoleRowMapper());
+            Role role;
+            try {
+                role = jdbc.queryForObject(SELECT_ROLE_BY_NAME_QUERY, of("name", roleName), new RoleRowMapper());
+            } catch (EmptyResultDataAccessException exception) {
+                // Insert the role if it doesn't exist
+                jdbc.update("INSERT INTO Roles (name, permission) VALUES (:name, :permission)",
+                        of("name", roleName, "permission", "DEFAULT_PERMISSION"));
+                role = jdbc.queryForObject(SELECT_ROLE_BY_NAME_QUERY, of("name", roleName), new RoleRowMapper());
+            }
+
             jdbc.update(INSERT_ROLE_TO_USER_QUERY, of("userId", userId, "roleId", requireNonNull(role).getId()));
-        } catch (EmptyResultDataAccessException exception) {
-            throw new ApiException("No role found by name: " + ROLE_USER.name());
         } catch (Exception exception) {
-            throw new ApiException("An error occurred. Please try again. ");
+            throw new ApiException("An error occurred while adding role to user: " + exception.getMessage());
         }
+//        try {
+//            Role role = jdbc.queryForObject(SELECT_ROLE_BY_NAME_QUERY, of("name", roleName), new RoleRowMapper());
+//            jdbc.update(INSERT_ROLE_TO_USER_QUERY, of("userId", userId, "roleId", requireNonNull(role).getId()));
+//        } catch (EmptyResultDataAccessException exception) {
+//            throw new ApiException("No role found by name: " + ROLE_USER.name());
+//        } catch (Exception exception) {
+//            throw new ApiException("An error occurred. Please try again. ");
+//        }
     }
 
     @Override
